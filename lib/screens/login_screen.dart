@@ -1,7 +1,8 @@
-import 'package:flash_chat/components/input_box.dart';
 import 'package:flash_chat/components/my_button.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../constants.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = '/login';
@@ -27,20 +28,30 @@ class _LoginScreenState extends State<LoginScreen> {
             Hero(
               tag: 'logo',
               child: Container(
-                height: 120.0,
+                height: 90.0,
                 child: Image.asset('images/virus_logo2.png'),
               ),
             ),
             SizedBox(
-              height: 48.0,
+              height: 32.0,
             ),
-            InputBox(hintText: 'Enter your email', onChange: (value) => null),
-            SizedBox(
+            TextField(
+                onChanged: (value) {
+                  email = value;
+                },
+                decoration: kInputBoxDecoration.copyWith(hintText: 'Enter your email')),
+             SizedBox(
               height: 8.0,
             ),
-            InputBox(hintText: 'Enter your password', onChange: (value) => null),
+            TextField(
+              onChanged: (value) {
+                password = value;
+              },
+              decoration: kInputBoxDecoration.copyWith(hintText: 'Enter your password'),
+              obscureText: true,
+            ),
             SizedBox(
-              height: 24.0,
+              height: 20.0,
             ),
             MyButton(
                 color: Color(0xFF544E6E),
