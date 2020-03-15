@@ -1,3 +1,6 @@
+import 'package:flash_chat/components/input_box.dart';
+import 'package:flash_chat/components/my_button.dart';
+import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -8,6 +11,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,80 +27,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             Hero(
               tag: 'logo',
               child: Container(
-                height: 200.0,
+                height: 120.0,
                 child: Image.asset('images/virus_logo2.png'),
               ),
             ),
             SizedBox(
               height: 48.0,
             ),
-            TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              decoration: InputDecoration(
+            InputBox(
                 hintText: 'Enter your email',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-              ),
-            ),
+                onChange: (value) {
+                  email = value;
+                }),
             SizedBox(
               height: 8.0,
             ),
-            TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              decoration: InputDecoration(
+            InputBox(
                 hintText: 'Enter your password',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-              ),
-            ),
+                onChange: (value) {
+                  password = value;
+                }),
             SizedBox(
               height: 24.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
+            MyButton(
                 color: Color(0xFFD35B3F),
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    //Implement registration functionality.
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
+                text: 'Register',
+                onpress: () {
+                  Navigator.pushNamed(context, LoginScreen.id);
+                  print('Go to: ' + LoginScreen.id);
+                  print('Email: ' + email);
+                  print('Password: ' + password);
+                }),
           ],
         ),
       ),

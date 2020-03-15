@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "180883751379",
+    "firebase_url": "https://flash-chat-project-id.firebaseio.com",
+    "project_id": "flash-chat-project-id",
+    "storage_bucket": "flash-chat-project-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180883751379:android:1e97da9df7f2cd95f92f26",
+        "android_client_info": {
+          "package_name": "ducvu.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180883751379-lgkebad26jl0pd4bhqn4710ms2hthajo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx-sUT6M0sjwiwoX0wyQUpPLcyWMtQX7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180883751379-lgkebad26jl0pd4bhqn4710ms2hthajo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
