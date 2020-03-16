@@ -15,6 +15,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
 
+  bool _isHidden = true;
+
+  void _toggleVisibility() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,19 +44,30 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 32.0,
             ),
             TextField(
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration: kInputBoxDecoration.copyWith(hintText: 'Enter your email')),
-             SizedBox(
+              onChanged: (value) {
+                email = value;
+              },
+              decoration:
+              kInputBoxDecoration.copyWith(hintText: 'Enter you email')
+                  .copyWith(prefixIcon: Icon(Icons.email)),
+              keyboardAppearance: Brightness.dark,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(
               height: 8.0,
             ),
             TextField(
               onChanged: (value) {
                 password = value;
               },
-              decoration: kInputBoxDecoration.copyWith(hintText: 'Enter your password'),
-              obscureText: true,
+              decoration: kInputBoxDecoration.copyWith(hintText: 'Enter you password').copyWith(
+                  prefixIcon: Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    onPressed: _toggleVisibility,
+                    icon: _isHidden ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                  )),
+              obscureText: _isHidden,
+              keyboardAppearance: Brightness.dark,
             ),
             SizedBox(
               height: 20.0,

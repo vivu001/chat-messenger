@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                   text: ['Corona Chat'],
                   textStyle: TextStyle(
                       fontSize: 40.0,
-                      fontFamily: "Lariess Regular",
+                      fontFamily: "Pacifico",
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 )
