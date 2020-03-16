@@ -54,6 +54,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                 ),
                 TypewriterAnimatedTextKit(
                   text: ['Corona Chat'],
+                  speed: Duration(milliseconds: 200),
                   textStyle: TextStyle(
                       fontSize: 40.0,
                       fontFamily: "Pacifico",
