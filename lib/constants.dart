@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const kMessageStyle = TextStyle(
   color: Colors.white,
-  fontSize: 16.0,
+  fontSize: 15.0,
 );
 
 const kMessageTextFieldDecoration = InputDecoration(

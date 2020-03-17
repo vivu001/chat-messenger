@@ -12,14 +12,17 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  // Cloud Firestore
-  final _fireStore = Firestore.instance;
+final _fireStore = Firestore.instance;
+FirebaseUser _loggedInUser;
 
+class _ChatScreenState extends State<ChatScreen> {
   // Authentication with Firebase
   final _auth = FirebaseAuth.instance;
 
-  FirebaseUser loggedInUser;
+  // Controller of TextField
+  final mesTextHolder = TextEditingController();
+
+//  FirebaseUser loggedInUser;
   String messageText;
 
   @override
@@ -32,23 +35,21 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       final user = await _auth.currentUser();
       if (user != null) {
-        loggedInUser = user;
-        print('LoggedIn User: ' + loggedInUser.email);
+        _loggedInUser = user;
+        print('LoggedIn User: ' + _loggedInUser.email);
       }
     } catch (e) {
       print('Exceptions: \n' + e.toString());
     }
   }
 
-/*  void messagesStream() async {
+  /*  void messagesStream() async {
     await for (var snapshot in _fireStore.collection('messages').snapshots()) {
       for (var message in snapshot.documents) {
         print(message.data);
       }
     }
   }*/
-
-  final mesTextHolder = TextEditingController();
 
   void _clearTextField() {
     mesTextHolder.clear();
@@ -57,6 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFBF8F5),
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
@@ -69,42 +71,12 @@ class _ChatScreenState extends State<ChatScreen> {
               }),
         ],
         title: Text('Chat 🤧 😷️ 🚑️ 🆘 🛌'),
-        backgroundColor: Color(0xFF007791),
+        backgroundColor: Color(0xFF718C6A),
       ),
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: _fireStore.collection('messages').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                List<MessageBubble> messageBubbles = [];
-                final messages = snapshot.data.documents;
-
-                for (var mes in messages) {
-                  final mesText = mes.data['text'];
-                  final mesSender = mes.data['sender'];
-
-                  final mesBubble =
-                      MessageBubble(text: mesText, sender: mesSender, currentUser: loggedInUser);
-
-                  messageBubbles.add(mesBubble);
-//                  messageBubbles.add(SizedBox(height: 7));
-                }
-
-                return Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                    children: messageBubbles,
-                  ),
-                );
-              },
-            ),
+            MessagesStream(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -124,13 +96,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   FlatButton(
                     onPressed: () {
                       //Implement send functionality.
-                      print(messageText + ' ' + loggedInUser.email + '!');
+                      print(messageText + ' ' + _loggedInUser.email + '!');
                       _fireStore
                           .collection('messages')
-                          .add({'text': messageText, 'sender': loggedInUser.email});
+                          .add({'text': messageText, 'sender': _loggedInUser.email});
                       _clearTextField();
                     },
-                    child: Icon(Icons.send, color: Color(0xFF007791)),
+                    child: Icon(Icons.send, color: Color(0xFF344955)),
                   ),
                 ],
               ),
@@ -142,34 +114,77 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+class MessagesStream extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _fireStore.collection('messages').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        List<MessageBubble> messageBubbles = [];
+        final messages = snapshot.data.documents;
+
+        for (var mes in messages) {
+          final mesText = mes.data['text'];
+          final mesSender = mes.data['sender'];
+
+          final mesBubble = MessageBubble(text: mesText, sender: mesSender);
+
+          messageBubbles.add(mesBubble);
+        }
+
+        return Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            children: messageBubbles,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class MessageBubble extends StatelessWidget {
   final String text;
   final String sender;
-  final FirebaseUser currentUser;
 
-  MessageBubble({this.text, this.sender, this.currentUser});
+  MessageBubble({this.text, this.sender});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(7.0),
       child: Column(
-        crossAxisAlignment: (sender == currentUser.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            (sender == _loggedInUser.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            (sender == currentUser.email) ? 'me' : sender,
-            style: TextStyle(fontSize: 13.0, color: Color(0xFF8D6E63)),
-          ),
           Material(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+                bottomLeft: (sender == _loggedInUser.email) ? Radius.circular(30) : Radius.circular(0),
+                bottomRight: (sender == _loggedInUser.email) ? Radius.circular(0) : Radius.circular(30)),
             elevation: 5.0,
-            color: (sender == currentUser.email) ? Color(0xFFFF9800) : Color(0xFFA5D6A7),
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: (sender == currentUser.email)
-                  ? Text(text, style: kMessageStyle)
-                  : Text(text, style: kMessageStyle.copyWith(color: Color(0xFF8D6E63))),
-            ),
+            color: (sender == _loggedInUser.email) ? Color(0xFFFF9800) : Color(0xFF4CAF50),
+            child: Container(
+                padding: EdgeInsets.all(7),
+                child: Column(
+                  children: <Widget>[
+                    // TODO: insert nickname sender?.replaceFirst(RegExp(r'\@[^]*'), '')
+                    /*Text(
+                      textAlign: (sender == _loggedInUser.email) ? TextAlign.right : TextAlign.left,
+                      style: TextStyle(fontSize: 11.0, color: Color(0xFF141518), fontStyle: FontStyle.italic),
+                    ),*/
+                    Text(text,
+                        style: kMessageStyle,
+                        textAlign: (sender == _loggedInUser.email) ? TextAlign.end : TextAlign.start)
+                  ],
+                )),
           ),
         ],
       ),
