@@ -4,6 +4,7 @@ import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:time_ago_provider/time_ago_provider.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = '/chat';
@@ -42,14 +43,6 @@ class _ChatScreenState extends State<ChatScreen> {
       print('Exceptions: \n' + e.toString());
     }
   }
-
-  /*  void messagesStream() async {
-    await for (var snapshot in _fireStore.collection('messages').snapshots()) {
-      for (var message in snapshot.documents) {
-        print(message.data);
-      }
-    }
-  }*/
 
   void _clearTextField() {
     mesTextHolder.clear();
@@ -99,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       print(messageText + ' ' + _loggedInUser.email + '!');
                       _fireStore
                           .collection('messages')
-                          .add({'text': messageText, 'sender': _loggedInUser.email});
+                          .add({'text': messageText, 'sender': _loggedInUser.email, 'time': DateTime.now()});
                       _clearTextField();
                     },
                     child: Icon(Icons.send, color: Color(0xFF344955)),
@@ -127,19 +120,22 @@ class MessagesStream extends StatelessWidget {
         }
 
         List<MessageBubble> messageBubbles = [];
-        final messages = snapshot.data.documents;
+        final messages = snapshot.data.documents.reversed;
 
         for (var mes in messages) {
           final mesText = mes.data['text'];
           final mesSender = mes.data['sender'];
+          final mesTime = mes.data['time'];
 
-          final mesBubble = MessageBubble(text: mesText, sender: mesSender);
+          final mesBubble = MessageBubble(
+              text: mesText, sender: mesSender, time: mesTime, isMe: _loggedInUser.email == mesSender);
 
           messageBubbles.add(mesBubble);
         }
 
         return Expanded(
           child: ListView(
+            reverse: true,
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             children: messageBubbles,
           ),
@@ -152,39 +148,57 @@ class MessagesStream extends StatelessWidget {
 class MessageBubble extends StatelessWidget {
   final String text;
   final String sender;
+  final Timestamp time;
+  final bool isMe;
 
-  MessageBubble({this.text, this.sender});
+  MessageBubble({this.text, this.sender, this.time, this.isMe});
+
+  // TODO: show time ago by double click on a message bubble
+/*  void showTimeAgo() {
+    final String timeAgo = TimeAgo.getTimeAgo(time.millisecondsSinceEpoch);
+    Text(
+      timeAgo,
+      textAlign: isMe ? TextAlign.right : TextAlign.left,
+      style: TextStyle(fontSize: 11.0, color: Color(0xFF141518), fontStyle: FontStyle.italic),
+    );
+  }*/
 
   @override
   Widget build(BuildContext context) {
+    final String timeAgo = TimeAgo.getTimeAgo(time.millisecondsSinceEpoch);
     return Padding(
       padding: EdgeInsets.all(7.0),
       child: Column(
-        crossAxisAlignment:
-            (sender == _loggedInUser.email) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Material(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-                bottomLeft: (sender == _loggedInUser.email) ? Radius.circular(30) : Radius.circular(0),
-                bottomRight: (sender == _loggedInUser.email) ? Radius.circular(0) : Radius.circular(30)),
-            elevation: 5.0,
-            color: (sender == _loggedInUser.email) ? Color(0xFFFF9800) : Color(0xFF4CAF50),
-            child: Container(
-                padding: EdgeInsets.all(7),
-                child: Column(
-                  children: <Widget>[
-                    // TODO: insert nickname sender?.replaceFirst(RegExp(r'\@[^]*'), '')
-                    /*Text(
-                      textAlign: (sender == _loggedInUser.email) ? TextAlign.right : TextAlign.left,
-                      style: TextStyle(fontSize: 11.0, color: Color(0xFF141518), fontStyle: FontStyle.italic),
-                    ),*/
-                    Text(text,
-                        style: kMessageStyle,
-                        textAlign: (sender == _loggedInUser.email) ? TextAlign.end : TextAlign.start)
-                  ],
-                )),
+           Text(
+            timeAgo,
+            textAlign: isMe ? TextAlign.right : TextAlign.left,
+            style: TextStyle(fontSize: 11.0, color: Color(0xFF141518), fontStyle: FontStyle.italic),
+          ),
+          GestureDetector(
+//            onTap: showTimeAgo,
+            child: Material(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                  bottomLeft: isMe ? Radius.circular(30) : Radius.circular(0),
+                  bottomRight: isMe ? Radius.circular(0) : Radius.circular(30)),
+              elevation: 5.0,
+              color: isMe ? Color(0xFFFF9800) : Color(0xFF4CAF50),
+              child: Container(
+                  padding: EdgeInsets.all(7),
+                  child: Column(
+                    children: <Widget>[
+                      // TODO: insert nickname sender?.replaceFirst(RegExp(r'\@[^]*'), '')
+                      /*Text(
+                        textAlign: (sender == _loggedInUser.email) ? TextAlign.right : TextAlign.left,
+                        style: TextStyle(fontSize: 11.0, color: Color(0xFF141518), fontStyle: FontStyle.italic),
+                      ),*/
+                      Text(text, style: kMessageStyle, textAlign: isMe ? TextAlign.end : TextAlign.start)
+                    ],
+                  )),
+            ),
           ),
         ],
       ),
