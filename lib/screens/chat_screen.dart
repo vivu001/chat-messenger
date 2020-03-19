@@ -21,9 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
 
   // Controller of TextField
-  final mesTextHolder = TextEditingController();
+  final _mesTextHolder = TextEditingController();
 
-//  FirebaseUser loggedInUser;
   String messageText;
 
   @override
@@ -45,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _clearTextField() {
-    mesTextHolder.clear();
+    _mesTextHolder.clear();
   }
 
   @override
@@ -77,7 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      controller: mesTextHolder,
+                      controller: _mesTextHolder,
                       textInputAction: TextInputAction.send,
                       onChanged: (value) {
                         //Do something with the user input.
@@ -93,7 +92,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       _fireStore
                           .collection('messages')
                           .add({'text': messageText, 'sender': _loggedInUser.email, 'time': DateTime.now()});
-                      _fireStore.collection('messages').orderBy('time');
                       _clearTextField();
                     },
                     child: Icon(Icons.send, color: Color(0xFF344955)),
@@ -128,7 +126,8 @@ class MessagesStream extends StatelessWidget {
           return timestampA.compareTo(timestampB);
         });*/
 
-        messages.sort((a, b) => (a.data['time'] as Timestamp).compareTo(b.data['time'] as Timestamp));
+        // sort all messages by time
+        messages.sort((a, b) => (b.data['time'] as Timestamp).compareTo(a.data['time'] as Timestamp));
 
         for (var mes in messages) {
           final mesText = mes.data['text'];
@@ -142,10 +141,12 @@ class MessagesStream extends StatelessWidget {
         }
 
         return Expanded(
-          child: ListView(
-//            reverse: true,
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-            children: messageBubbles,
+          child: Scrollbar(
+            child: ListView(
+              reverse: true,
+              padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              children: messageBubbles,
+            ),
           ),
         );
       },

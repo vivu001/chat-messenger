@@ -83,7 +83,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               MyButton(
                   color: Color(0xFFD35B3F),
                   text: 'Submit',
-                  onpress: () async {
+                  onPress: () async {
                     setState(() {
                       _showSpinner = true;
                     });

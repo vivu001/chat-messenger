@@ -69,14 +69,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
             MyButton(
                 color: Color(0xFF344955),
                 text: 'Log In',
-                onpress: () {
+                onPress: () {
                   Navigator.pushNamed(context, LoginScreen.id);
                   print('Go to: ' + LoginScreen.id);
                 }),
             MyButton(
                 color: Color(0xFF718C6A),
                 text: 'Register',
-                onpress: () {
+                onPress: () {
                   Navigator.pushNamed(context, RegistrationScreen.id);
                   print('Go to: ' + RegistrationScreen.id);
                 }),

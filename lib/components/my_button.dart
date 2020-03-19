@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
   final Color color;
   final String text;
-  final Function onpress;
+  final Function onPress;
 
-  MyButton({@required this.color, @required this.text, @required this.onpress});
+  MyButton({@required this.color, @required this.text, @required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MyButton extends StatelessWidget {
         color: this.color,
         borderRadius: BorderRadius.circular(30.0),
         child: MaterialButton(
-          onPressed: onpress,
+          onPressed: onPress,
           hoverColor: Color(0x00000000),
           minWidth: 200.0,
           height: 42.0,

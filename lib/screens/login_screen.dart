@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
               MyButton(
                   color: Color(0xFF544E6E),
                   text: 'Log In',
-                  onpress: () async {
+                  onPress: () async {
                     setState(() {
                       _showSpinner = true;
                     });
