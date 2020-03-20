@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:time_ago_provider/time_ago_provider.dart';
 
@@ -17,10 +20,11 @@ class MessageBubble extends StatefulWidget {
 }
 
 class _MessageBubbleState extends State<MessageBubble> {
-  final MessageBubble messageBubbleWidget;
+  final MessageBubble _messageBubbleWidget;
+
   bool _showTime = false;
 
-  _MessageBubbleState(this.messageBubbleWidget);
+  _MessageBubbleState(this._messageBubbleWidget);
 
   void _changeLongPress() {
     setState(() {
@@ -29,13 +33,22 @@ class _MessageBubbleState extends State<MessageBubble> {
     });
   }
 
+/*  Color _color;
+
+  void _getColorFromUser(String sender) {
+    _color = otherUsersColors[sender];
+  }*/
+
   @override
   Widget build(BuildContext context) {
-    final String timeAgo = TimeAgo.getTimeAgo(messageBubbleWidget.time.millisecondsSinceEpoch);
+    final String timeAgo = TimeAgo.getTimeAgo(_messageBubbleWidget.time.millisecondsSinceEpoch);
+  /*  setState(() {
+      _getColorFromUser(_messageBubbleWidget.sender);
+    });*/
     return Padding(
       padding: EdgeInsets.all(7.0),
       child: Column(
-        crossAxisAlignment: messageBubbleWidget.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: _messageBubbleWidget.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           (_showTime)
               ? Text(
@@ -48,10 +61,10 @@ class _MessageBubbleState extends State<MessageBubble> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
-                bottomLeft: messageBubbleWidget.isMe ? Radius.circular(30) : Radius.circular(0),
-                bottomRight: messageBubbleWidget.isMe ? Radius.circular(0) : Radius.circular(30)),
+                bottomLeft: _messageBubbleWidget.isMe ? Radius.circular(30) : Radius.circular(0),
+                bottomRight: _messageBubbleWidget.isMe ? Radius.circular(0) : Radius.circular(30)),
             elevation: 5.0,
-            color: messageBubbleWidget.isMe ? Color(0xFFFF9800) : Color(0xFF4CAF50),
+            color: _messageBubbleWidget.isMe ? Color(0xFFFF9800) : Color(0xFFaa00c7),
             child: InkWell(
               onLongPress: _changeLongPress,
               child: Container(
@@ -59,9 +72,9 @@ class _MessageBubbleState extends State<MessageBubble> {
                   child: Column(
                     children: <Widget>[
                       // TODO: insert nickname sender?.replaceFirst(RegExp(r'\@[^]*'), '')
-                      Text(messageBubbleWidget.text,
+                      Text(_messageBubbleWidget.text,
                           style: kMessageStyle,
-                          textAlign: messageBubbleWidget.isMe ? TextAlign.end : TextAlign.start)
+                          textAlign: _messageBubbleWidget.isMe ? TextAlign.end : TextAlign.start)
                     ],
                   )),
             ),
