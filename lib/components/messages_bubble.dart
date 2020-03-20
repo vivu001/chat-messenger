@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +6,10 @@ import 'package:time_ago_provider/time_ago_provider.dart';
 import '../constants.dart';
 
 class MessageBubble extends StatefulWidget {
-  final String text;
-  final String sender;
-  final Timestamp time;
-  final bool isMe;
+  String text;
+  String sender;
+  Timestamp time;
+  bool isMe;
 
   MessageBubble({this.text, this.sender, this.time, this.isMe});
 
@@ -26,6 +24,19 @@ class _MessageBubbleState extends State<MessageBubble> {
 
   _MessageBubbleState(this._messageBubbleWidget);
 
+  @override
+  void didUpdateWidget(MessageBubble oldWidget) {
+    if (_messageBubbleWidget != widget) {
+      setState(() {
+        _messageBubbleWidget.text = widget.text;
+        _messageBubbleWidget.sender = widget.sender;
+        _messageBubbleWidget.time = widget.time;
+        _messageBubbleWidget.isMe = widget.isMe;
+      });
+      super.didUpdateWidget(oldWidget);
+    }
+  }
+
   void _changeLongPress() {
     setState(() {
       _showTime = !_showTime;
@@ -33,18 +44,13 @@ class _MessageBubbleState extends State<MessageBubble> {
     });
   }
 
-/*  Color _color;
-
-  void _getColorFromUser(String sender) {
-    _color = otherUsersColors[sender];
-  }*/
+  Color _getColorFromUser(String sender) {
+    return otherUsersColors[sender];
+  }
 
   @override
   Widget build(BuildContext context) {
     final String timeAgo = TimeAgo.getTimeAgo(_messageBubbleWidget.time.millisecondsSinceEpoch);
-  /*  setState(() {
-      _getColorFromUser(_messageBubbleWidget.sender);
-    });*/
     return Padding(
       padding: EdgeInsets.all(7.0),
       child: Column(
@@ -64,7 +70,9 @@ class _MessageBubbleState extends State<MessageBubble> {
                 bottomLeft: _messageBubbleWidget.isMe ? Radius.circular(30) : Radius.circular(0),
                 bottomRight: _messageBubbleWidget.isMe ? Radius.circular(0) : Radius.circular(30)),
             elevation: 5.0,
-            color: _messageBubbleWidget.isMe ? Color(0xFFFF9800) : Color(0xFFaa00c7),
+            color: _messageBubbleWidget.isMe
+                ? Color(0xFFFF9800)
+                : _getColorFromUser(_messageBubbleWidget.sender),
             child: InkWell(
               onLongPress: _changeLongPress,
               child: Container(

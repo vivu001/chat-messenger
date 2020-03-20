@@ -16,7 +16,7 @@ class ChatScreen extends StatefulWidget {
 final _fireStore = Firestore.instance;
 FirebaseUser _loggedInUser;
 
-/*List<Color> _colorPool = [
+List<Color> _colorPool = [
   Color(0xFF524c00),
   Color(0xFF0277bd),
   Color(0xFF004c40),
@@ -24,7 +24,7 @@ FirebaseUser _loggedInUser;
   Color(0xFF4CAF50),
 ];
 
-Map<String, Color> otherUsersColors = {};*/
+Map<String, Color> otherUsersColors = {};
 
 class _ChatScreenState extends State<ChatScreen> {
   // Authentication with Firebase
@@ -103,6 +103,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           .collection('messages')
                           .add({'text': messageText, 'sender': _loggedInUser.email, 'time': DateTime.now()});
                       _clearTextField();
+                      setState(() {
+                        print('REFRESH !!!');
+                      });
                     },
                     child: Icon(Icons.send, color: Color(0xFF344955)),
                   ),
@@ -149,10 +152,10 @@ class MessagesStream extends StatelessWidget {
 
           messageBubbles.add(mesBubble);
 
-      /*    if (!mesBubble.isMe) {
+          if (!mesBubble.isMe) {
             otherUsersColors.putIfAbsent(
                 mesSender, () => _colorPool.length > 0 ? _colorPool.removeLast() : Color(0xFFc88719));
-          }*/
+          }
 //          print(otherUsersColors.length);
         }
 
