@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_launcher_icons: "^0.7.3"
   cupertino_icons: ^0.1.2
   animated_text_kit: ^2.0.0
   firebase_core: ^0.4.4+3
@@ -27,6 +28,11 @@ flutter:
 
   assets:
   - images/
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/icon/icon.jpg"
 
 fonts:
   - family: Pacifico
